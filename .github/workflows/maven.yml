@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: CI for Java, Maven using caching
 
 on:
   push:
