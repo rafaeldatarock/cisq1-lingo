@@ -3,6 +3,11 @@ Feature: Starting a game
     I want to start a game,
     In order to practice Lingo
 
+Scenario: Start new game
+    When I start a game
+    Then the score is 0
+    And the first letter of a random 5-letter word is shown
+
 Feature: Game sequence
     As a Player,
     I want to be given a 5 letter word in the first round
