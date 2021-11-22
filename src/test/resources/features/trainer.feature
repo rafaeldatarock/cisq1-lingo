@@ -1,3 +1,8 @@
+Feature: Training for Lingo
+    As a Player,
+    I want to practice guessing 5, 6, and 7 letter words
+    In order to practice for my appearence in the real game
+
 Feature: Starting a game
     As a Player,
     I want to start a game,
