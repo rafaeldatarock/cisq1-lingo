@@ -3,23 +3,10 @@ Feature: Training for Lingo
     I want to practice guessing 5, 6, and 7 letter words
     In order to practice for my appearence in the real game
 
-Feature: Starting a game
-    As a Player,
-    I want to start a game,
-    In order to practice Lingo
-
     Scenario: Start new game
         When I start a game
         Then the score is 0
         And the first letter of a random 5-letter word is shown
-
-Feature: Game sequence
-    As a Player,
-    I want to be given a 5 letter word in the first round
-    And a 6 letter word in the next round 
-    And a 7 letter word in the round after that
-    And then the sequence should start again in the round after that
-    In order to follow the sequence of the game
 
     Scenario Outline: Start a new round
         Given I am playing a game
@@ -28,36 +15,17 @@ Feature: Game sequence
         When I start a new round
         Then the next word to guess has "<next length>" letters
 
-    Examples:
-        | previous length | next length |
-        | 5               | 6           |
-        | 6               | 7           |
-        | 7               | 5           |
+        Examples:
+            | previous length | next length |
+            | 5               | 6           |
+            | 6               | 7           |
+            | 7               | 5           |
 
-    # Failure path
-    Given I am playing a game
-    And the round was lost
-    Then I cannot start a new round
-
-Feature: See word length
-    As a Player,
-    I want to see the length of the word I need to guess,
-    In order to be able to think of correct guesses
-
-Feature: Guess limit
-    As a Player,
-    I want to have to guess a word within 5 tries,
-    In order to train for the Lingo contest
-
-Feature: Resuming a game
-    As a Player,
-    I want to resume a game where I left of,
-    So I can keep my progress in a game
-
-Feature: Guessing a word
-    As a Player,
-    I want to guess a word,
-    In order to get closer to the correct answer
+    # Failure path for 'Start a new round'
+    Scenario: Cannot start new round
+        Given I am playing a game
+        And the round was lost
+        Then I cannot start a new round
 
     Scenario Outline: Guessing a word
         Given I am playing a game
@@ -65,41 +33,74 @@ Feature: Guessing a word
         When my guess is "<guess>"
         Then the feedback I get should be "<feedback>"
 
-    Examples:
-    # c = correct, p = present, a = absent, i = invalid
-        | word  | guess   | feedback      |
-        | braam | braam   | c,c,c,c,c     |
-        | braam | vroom   | a,c,a,a,c     |
-        | braam | baard   | c,p,p,p,a     |
-        | baard | bedde   | c,a,p,a,a     |
-        | braam | bramen  | i,i,i,i,i,i   |
-        | braam | badgast | i,i,i,i,i,i,i |
+        Examples:
+        # c = correct, p = present, a = absent, i = invalid
+            | word  | guess   | feedback      |
+            | braam | braam   | c,c,c,c,c     |
+            | braam | vroom   | a,c,a,a,c     |
+            | braam | baard   | c,p,p,p,a     |
+            | baard | bedde   | c,a,p,a,a     |
+            | braam | bramen  | i,i,i,i,i,i   |
+            | braam | badgast | i,i,i,i,i,i,i |
 
-Feature: Getting feedback
-    As a Player,
-    I want to get feedback after I guessed a word,
-    In order to know which letters are present in the word and/or in the correct place or if my guess was invalid
+    Scenario Outline: Score calculation
+        Given my total score was "<prevtotal>"
+        And I finished a round
+        When this round took "<amount>" of guesses
+        Then the total score should be "<newtotal>"
 
-Feature: See first hint
-    As a Player,
-    I want to see a hint when the game round starts with a new word,
-    In order to see with which letter the word starts
+        Examples:
+            | prevtotal | amount | newtotal |
+            | 25        | 1      | 50       |
+            | 50        | 1      | 75       |
+            | 75        | 1      | 100      |
+            | 100       | 5      | 105      |
+            | 0         | 1      | 25       |
+            | 0         | 2      | 20       |
+            | 0         | 3      | 15       |
+            | 0         | 4      | 10       |
+            | 0         | 5      | 5        |
+            | 0         | 6      | 0        |
 
-Feature: See hint
-    As a Player,
-    I want to see a new hint after I guessed a letter place correctly,
-    In order to easily see the letters I guessed in their correct place
+    Scenario: Guess limit
+        Given I am playing a game
+        And I have already used 4 guesses
+        When guess for the 5th time
+        And my guess is incorrect
+        Then I am game over
 
-Feature: See score after round
-    As a Player,
-    I want to see my score after I guessed a word correctly or failed to do so within 5 tries,
-    In order to see how well I performed
+    Scenario Outline: Initial hint
+        Given I started a game
+        When the word I need to guess is "<word>"
+        Then I should get this "<hint>"
 
+        Examples:
+        # dots are used to substitute for empty hint
+            | word    | hint    |
+            | bapao   | b....   |
+            | koekje  | k.....  |
+            | brownie | b...... |
 
-# We weten dat één speler meerdere spellen kan hebben. Daar hebben we in onze specificaties geen
-# rekening mee gehouden. Denk na hoe je dit in de code wel zou doen. Dit mag je uitwerken in je
-# specificaties maar hoeft niet.
+    Scenario Outline: Updating hint
+        Given I am playing a game
+        And the word I need to guess is "<word>"
+        And my hint is "<hint>"
+        When I guess "<guess>"
+        Then my next hint should be "<nexthint>"
 
-# Door middel van Tokens bijhouden? Token uitgeven bij game start die correspondeert met een bepaalde gamesessie
-# Elke stap wordt de token mee gezonden
-# Zo kun je ook altijd later verder gaan mits de token maar is opgeslagen
+        Examples:
+        # dots are used to substitute for empty hint
+            | word | hint | guess | nexthint |
+            | koekje | k..... | ladder | k..... |
+            | koekje | k..... | koelen | koe... |
+            | koekje | koe... | bankje | koekje |
+            | bapao  | b..... | baard  | ba...  |
+            | babbel | b..... | seibel | b..bel |
+
+    # We weten dat één speler meerdere spellen kan hebben. Daar hebben we in onze specificaties geen
+    # rekening mee gehouden. Denk na hoe je dit in de code wel zou doen. Dit mag je uitwerken in je
+    # specificaties maar hoeft niet.
+
+    # Door middel van Tokens bijhouden? Token uitgeven bij game start die correspondeert met een bepaalde gamesessie
+    # Elke stap wordt de token mee gezonden
+    # Zo kun je ook altijd later verder gaan mits de token maar is opgeslagen
