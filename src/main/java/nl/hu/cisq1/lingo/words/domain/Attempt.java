@@ -1,5 +1,7 @@
 package nl.hu.cisq1.lingo.words.domain;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,10 +18,23 @@ public class Attempt {
             throw new GuessLengthDoesNotMatchWordLengthException(wordToGuessLength);
         }
 
-        if (wordToGuess.getValue().equals(guess)) {
-            return Collections.nCopies(wordToGuessLength, CORRECT);
+        List<String> wordLetters = new ArrayList<>(List.of(wordToGuess.getValue().split("")));
+        String[] guessLetters = guess.split("");
+        List<Feedback> feedback = new ArrayList<>(Collections.nCopies(wordToGuessLength, ABSENT));
+
+        for (int i = 0; i < guessLetters.length; i++) {
+            if (wordLetters.get(i).equals(guessLetters[i])) {
+                feedback.set(i, CORRECT);
+                wordLetters.set(i, " ");
+                continue;
+            }
+
+            if (wordLetters.contains(guessLetters[i])) {
+                feedback.set(i, PRESENT);
+                wordLetters.set(wordLetters.indexOf(guessLetters[i]), " ");
+            }
         }
 
-        return Collections.nCopies(wordToGuessLength, ABSENT);
+        return feedback;
     }
 }
