@@ -26,9 +26,14 @@ public class Attempt {
             if (wordLetters.get(i).equals(guessLetters[i])) {
                 feedback.set(i, CORRECT);
                 wordLetters.set(i, " ");
+            }
+        }
+
+        for (int i = 0; i < guessLetters.length; i++) {
+            if (feedback.get(i) == CORRECT) {
                 continue;
             }
-
+            
             if (wordLetters.contains(guessLetters[i])) {
                 feedback.set(i, PRESENT);
                 wordLetters.set(wordLetters.indexOf(guessLetters[i]), " ");
