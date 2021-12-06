@@ -1,24 +1,22 @@
-package nl.hu.cisq1.lingo.words.domain;
+package nl.hu.cisq1.lingo.trainer.domain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import nl.hu.cisq1.lingo.words.domain.exception.GuessLengthDoesNotMatchWordLengthException;
-
-import static nl.hu.cisq1.lingo.words.domain.Feedback.*;
+import static nl.hu.cisq1.lingo.trainer.domain.Feedback.*;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GuessLengthDoesNotMatchWordLengthException;
 
 public class Attempt {
     Attempt(){}
 
-    public static List<Feedback> guess(Word wordToGuess, String guess) throws GuessLengthDoesNotMatchWordLengthException {
-        Integer wordToGuessLength = wordToGuess.getLength();
+    public static List<Feedback> guess(String wordToGuess, String guess) throws GuessLengthDoesNotMatchWordLengthException {
+        Integer wordToGuessLength = wordToGuess.length();
         if (wordToGuessLength != guess.length()) {
             throw new GuessLengthDoesNotMatchWordLengthException(wordToGuessLength);
         }
 
-        List<String> wordLetters = new ArrayList<>(List.of(wordToGuess.getValue().split("")));
+        List<String> wordLetters = new ArrayList<>(List.of(wordToGuess.split("")));
         String[] guessLetters = guess.split("");
         List<Feedback> feedback = new ArrayList<>(Collections.nCopies(wordToGuessLength, ABSENT));
 
