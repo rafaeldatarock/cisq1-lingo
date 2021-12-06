@@ -8,9 +8,18 @@ import static nl.hu.cisq1.lingo.trainer.domain.Feedback.*;
 import nl.hu.cisq1.lingo.trainer.domain.exception.GuessLengthDoesNotMatchWordLengthException;
 
 public class Attempt {
-    Attempt(){}
+    private List<Feedback> feedback;
 
-    public static List<Feedback> guess(String wordToGuess, String guess) throws GuessLengthDoesNotMatchWordLengthException {
+    public List<Feedback> getFeedback() {
+        return this.feedback;
+    }
+
+    public Attempt() {}
+    public Attempt(List<Feedback> feedback) {
+        this.feedback = feedback;
+    }
+
+    public static Attempt guess(String wordToGuess, String guess) throws GuessLengthDoesNotMatchWordLengthException {
         Integer wordToGuessLength = wordToGuess.length();
         if (wordToGuessLength != guess.length()) {
             throw new GuessLengthDoesNotMatchWordLengthException(wordToGuessLength);
@@ -38,6 +47,6 @@ public class Attempt {
             }
         }
 
-        return feedback;
+        return new Attempt(feedback);
     }
 }

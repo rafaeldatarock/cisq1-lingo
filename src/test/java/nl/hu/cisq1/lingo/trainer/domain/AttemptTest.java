@@ -34,7 +34,7 @@ class AttemptTest {
     @MethodSource("guessExamples")
     @DisplayName("Guessing a word")
     void attemptGuess(String word, String guess, List<Feedback> feedback) throws Exception {
-        List<Feedback> actual = Attempt.guess(word, guess);
+        List<Feedback> actual = Attempt.guess(word, guess).getFeedback();
         List<Feedback> expected = feedback;
         assertEquals(expected, actual);
     }
