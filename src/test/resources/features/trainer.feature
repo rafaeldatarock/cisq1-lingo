@@ -85,17 +85,17 @@ Feature: Training for Lingo
         Given I am playing a game
         And the word I need to guess is "<word>"
         And my hint is "<hint>"
-        When I guess "<guess>"
+        When the feedback on my guess is "<feedback>"
         Then my next hint should be "<nexthint>"
 
         Examples:
         # dots are used to substitute for empty hint
-            | word | hint | guess | nexthint |
-            | koekje | k..... | ladder | k..... |
-            | koekje | k..... | koelen | koe... |
-            | koekje | koe... | bankje | koekje |
-            | bapao  | b..... | baard  | ba...  |
-            | babbel | b..... | seibel | b..bel |
+            | word   | hint   | feedback    | nexthint |
+            | koekje | k..... | a,a,a,a,p,a | k.....   |
+            | koekje | k..... | c,c,c,a,p,a | koe...   |
+            | koekje | koe... | a,a,a,c,c,c | koekje   |
+            | bapao  | b....  | c,c,p,a,a   | ba...    |
+            | babbel | b..... | a,a,a,c,c,c | b..bel   |
 
     # We weten dat één speler meerdere spellen kan hebben. Daar hebben we in onze specificaties geen
     # rekening mee gehouden. Denk na hoe je dit in de code wel zou doen. Dit mag je uitwerken in je
