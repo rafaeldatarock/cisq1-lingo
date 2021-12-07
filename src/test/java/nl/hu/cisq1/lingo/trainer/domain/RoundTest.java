@@ -1,5 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -24,12 +25,13 @@ public class RoundTest {
     }
 
     @ParameterizedTest
-    @MethodSource("")
-    @DisplayName("Hint should update correctly after guessing")
-    void updateHintAfterGuess(String word, String[] currentHint, List<Feedback> feedbackAfterGuess, String[] nextHint) {
+    @MethodSource("hintBeforeAfterExamples")
+    @DisplayName("Hint should update correctly based on feedback")
+    void updateHintBasedOnFeedback(String word, String[] currentHint, List<Feedback> feedbackAfterGuess, String[] nextHint) {
         Round round = new Round(word, currentHint);
-        String[] actual = round.updateHint(feedbackAfterGuess);
-        String[] expected = nextHint;
+        round.updateHint(feedbackAfterGuess);
+        String actual = round.getHint();
+        String expected = Arrays.toString(nextHint);
         assertEquals(expected, actual);
     }
 }
