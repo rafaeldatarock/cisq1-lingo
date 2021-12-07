@@ -14,6 +14,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RoundTest {
 
+    public static Stream<Arguments> initialHintExamples() {
+        return Stream.of(
+            Arguments.of("bapao", new String[]{"b", ".", ".", ".", "."}),
+            Arguments.of("koekje", new String[]{"k", ".", ".", ".", ".", "."}),
+            Arguments.of("brownie", new String[]{"b", ".", ".", ".", ".", ".", "."})
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("initialHintExamples")
+    @DisplayName("Initial hint should be based on word to guess")
+    void initialHintBasedOnWord(String word, String[] hint) {
+        Round round = Round.start(word);
+        String actual = round.getHint();
+        String expected = Arrays.toString(hint);
+        assertEquals(expected, actual);
+    }
+
     public static Stream<Arguments> hintBeforeAfterExamples() {
         return Stream.of(
             Arguments.of("koekje", new String[]{"k", ".", ".", ".", ".", "."}, List.of(ABSENT, ABSENT, ABSENT, ABSENT, PRESENT, ABSENT),    new String[]{"k", ".", ".", ".", ".", "."}),
