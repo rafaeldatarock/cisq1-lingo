@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -12,7 +13,9 @@ import nl.hu.cisq1.lingo.trainer.domain.exception.GuessLengthDoesNotMatchWordLen
 
 import static nl.hu.cisq1.lingo.trainer.domain.Feedback.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AttemptTest {
 
@@ -62,6 +65,14 @@ class AttemptTest {
     @Test
     @DisplayName("Word is guessed if all letters are correct")
     void wordIsGuessed() {
-        
+        Attempt attempt = Attempt.guess("baard", "baard");
+        assertTrue(attempt.isGuessCorrect());
+    }
+
+    @Test
+    @DisplayName("Word is not guessed if not all letters are correct")
+    void wordIsNotGuessed() {
+        Attempt attempt = Attempt.guess("baard", "board");
+        assertFalse(attempt.isGuessCorrect());
     }
 }

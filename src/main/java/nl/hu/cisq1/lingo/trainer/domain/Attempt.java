@@ -49,4 +49,8 @@ public class Attempt {
 
         return new Attempt(feedback);
     }
+
+    public boolean isGuessCorrect() {
+        return this.feedback.stream().allMatch(CORRECT::equals);
+    }
 }
