@@ -8,6 +8,10 @@ public class Round {
     private String wordToGuess;
     private String[] hint;
 
+    public String getWordToGuess() {
+        return wordToGuess;
+    }
+
     public String getHint() {
         return Arrays.toString(hint);
     }

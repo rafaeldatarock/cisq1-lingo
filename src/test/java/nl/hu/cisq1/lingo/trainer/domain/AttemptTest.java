@@ -58,4 +58,10 @@ class AttemptTest {
             () -> { Attempt.guess(word, guess); } 
         );
     }
+
+    @Test
+    @DisplayName("Word is guessed if all letters are correct")
+    void wordIsGuessed() {
+        
+    }
 }
