@@ -27,6 +27,7 @@ Feature: Training for Lingo
         And the round was lost
         Then I cannot start a new round
 
+    # TEST DONE
     Scenario Outline: Guessing a word
         Given I am playing a game
         And the word to guess is "<word>"
@@ -62,13 +63,36 @@ Feature: Training for Lingo
             | 0         | 5      | 5        |
             | 0         | 6      | 0        |
 
-    Scenario: Guess limit
+    Scenario Outline: Game status playing
         Given I am playing a game
-        And I have already used 4 guesses
-        When guess for the 5th time
-        And my guess is incorrect
-        Then I am game over
+        And the word I need to guess is "<word>"
+        When I guess "<guess>"
+        Then the gamestatus should be "<status>"
 
+        Examples:
+            | word  | guess  | status  |
+            | baard | baard  | WAITING |
+            | baard | braam  | PLAYING |
+    
+    Scenario Outline: Guess limit
+        Given I am playing a game
+        And the word I need to guess is "<word>"
+        And my first guess is "<g1>"
+        And my second guess is "<g2>"
+        And my third guess is "<g3>"
+        And my fourth guess is "<g4>"
+        When my fifth guess is "<g5>"
+        Then the gamestatus should be "<status>"
+
+        Examples:
+            | word  | g1    | g2    | g3    | g4    | g5    | status   |
+            | baard | braam | zwemt | leest | beest | baard | WAITING  |
+            | baard | braam | zwem  | lees  | bees  | baard | WAITING  |
+            | baard | braam | zwemt | leest | beest | blaat | GAMEOVER |
+            | baard | braam | zwem  | lees  | bees  | blaat | GAMEOVER |
+
+
+    # TEST DONE
     Scenario Outline: Initial hint
         Given I started a game
         When the word I need to guess is "<word>"
@@ -81,7 +105,8 @@ Feature: Training for Lingo
             | koekje  | k.....  |
             | brownie | b...... |
 
-    Scenario Outline: Updating hint
+    # TEST DONE
+    Scenario Outline: Updating hint 
         Given I am playing a game
         And the word I need to guess is "<word>"
         And my hint is "<hint>"
