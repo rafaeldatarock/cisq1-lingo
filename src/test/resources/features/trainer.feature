@@ -8,7 +8,7 @@ Feature: Training for Lingo
         Then the score is 0
         And the first letter of a random 5-letter word is shown
 
-    Scenario Outline: Start a new round
+    Scenario Outline: Continue to next round
         Given I am playing a game
         And the round was won
         And the last word had "<previous length>" letters
@@ -72,7 +72,7 @@ Feature: Training for Lingo
         Examples:
             | word  | guess  | status  |
             | baard | baard  | WAITING |
-            | baard | braam  | PLAYING |
+            | baard | board  | PLAYING |
     
     Scenario Outline: Guess limit
         Given I am playing a game

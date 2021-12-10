@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import static nl.hu.cisq1.lingo.trainer.domain.Feedback.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RoundTest {
+class RoundTest {
 
     public static Stream<Arguments> initialHintExamples() {
         return Stream.of(
