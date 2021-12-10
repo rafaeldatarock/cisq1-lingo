@@ -6,9 +6,9 @@ import java.util.List;
 import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotStartedWith5LetterWordException;
 
 public class Game {
-    private Integer score;
-    private GameStatus status;
-    private List<Round> rounds;
+    private Integer score = 0;
+    private GameStatus status = GameStatus.WAITING;
+    private List<Round> rounds = new ArrayList<>();
 
     public Integer getScore() {
         return this.score;
@@ -18,30 +18,38 @@ public class Game {
         return this.status;
     }
 
-    public Round getCurrentRound() {
+    private Round getCurrentRound() {
         // Pick last item from List
         return this.rounds.get(rounds.size() - 1);
     }
 
     private Game() {}
-    private Game(Integer score, List<Round> rounds, GameStatus status) {
-        this.score = score;
-        this.rounds = rounds;
-        this.status = status;
-    }
 
     public static Game start(String word) throws GameNotStartedWith5LetterWordException {
         if (word.length() != 5) {
             throw new GameNotStartedWith5LetterWordException();
         }
 
-        List<Round> rounds = new ArrayList<>();
-        rounds.add(Round.start(word));
-        return new Game(0, rounds, GameStatus.PLAYING);
+        Game game = new Game();
+        game.startNewRound(word);
+
+        return game;
     }
 
-    // public attemptGuess(String guess) {
+    public void startNewRound(String word) {
+        if (!status.equals(GameStatus.WAITING)) {
+            // throw new MoveNotAllowedException();
+        }
+
+        status = GameStatus.PLAYING;
+        rounds.add(Round.start(word));
+    }
+
+    // TODO: public attemptGuess(String guess) {
         
     // }
+
+    // TODO: getProgress()
+    // Returns hint, score
 
 }
