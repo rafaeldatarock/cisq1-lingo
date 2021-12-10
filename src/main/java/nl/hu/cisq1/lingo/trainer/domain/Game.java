@@ -24,9 +24,10 @@ public class Game {
     }
 
     private Game() {}
-    private Game(Integer score, List<Round> rounds) {
+    private Game(Integer score, List<Round> rounds, GameStatus status) {
         this.score = score;
         this.rounds = rounds;
+        this.status = status;
     }
 
     public static Game start(String word) throws GameNotStartedWith5LetterWordException {
@@ -36,11 +37,11 @@ public class Game {
 
         List<Round> rounds = new ArrayList<>();
         rounds.add(Round.start(word));
-        return new Game(0, rounds);
+        return new Game(0, rounds, GameStatus.PLAYING);
     }
 
-    public attemptGuess(String guess) {
+    // public attemptGuess(String guess) {
         
-    }
+    // }
 
 }

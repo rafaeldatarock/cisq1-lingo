@@ -8,14 +8,20 @@ import static nl.hu.cisq1.lingo.trainer.domain.Feedback.*;
 import nl.hu.cisq1.lingo.trainer.domain.exception.GuessLengthDoesNotMatchWordLengthException;
 
 public class Attempt {
+    private String guess;
     private List<Feedback> feedback;
+
+    public String getGuess() {
+        return this.guess;
+    }
 
     public List<Feedback> getFeedback() {
         return this.feedback;
     }
 
     public Attempt() {}
-    public Attempt(List<Feedback> feedback) {
+    public Attempt(String guess, List<Feedback> feedback) {
+        this.guess = guess;
         this.feedback = feedback;
     }
 
@@ -47,7 +53,7 @@ public class Attempt {
             }
         }
 
-        return new Attempt(feedback);
+        return new Attempt(guess, feedback);
     }
 
     public boolean isGuessCorrect() {

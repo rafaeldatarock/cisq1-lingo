@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -51,5 +52,28 @@ class RoundTest {
         String actual = round.getHint();
         String expected = Arrays.toString(nextHint);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void roundIsWon() {
+        Round round = Round.start("baard");
+        assertEquals(GameStatus.WAITING, round.attemptGuess("baard"));
+    }
+
+    @Test
+    void roundIsPlaying() {
+        Round round = Round.start("baard");
+        assertEquals(GameStatus.PLAYING, round.attemptGuess("board"));
+    }
+
+    // TODO: turn into paramTest to test edgecases like invalid attempts
+    @Test
+    void roundIsLost() {
+        Round round = Round.start("baard");
+        round.attemptGuess("board"); // 1
+        round.attemptGuess("board"); // 2
+        round.attemptGuess("board"); // 3
+        round.attemptGuess("board"); // 4
+        assertEquals(GameStatus.GAMEOVER, round.attemptGuess("board")); // 5
     }
 }
