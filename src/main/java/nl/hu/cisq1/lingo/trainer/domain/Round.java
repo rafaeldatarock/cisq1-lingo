@@ -8,7 +8,6 @@ import java.util.List;
 public class Round {
     private String wordToGuess;
     private String[] hint;
-    private RoundStatus status;
     private List<Attempt> attempts;
 
     public String getWordToGuess() {
@@ -35,6 +34,9 @@ public class Round {
     public GameStatus attemptGuess(String guess) {
         Attempt attempt = Attempt.guess(this.wordToGuess, guess);
         attempts.add(attempt);
+
+        updateHint(attempt.getFeedback());
+
         if (attempt.isGuessCorrect()) {
             return GameStatus.WAITING;
         } else if (attempts.size() < 5) {
@@ -44,10 +46,12 @@ public class Round {
         }
     }
 
-    public void updateHint(List<Feedback> feedback) {
+    private void updateHint(List<Feedback> feedback) {
+        String[] splitWord = wordToGuess.split("");
+
         for (int i = 0; i < feedback.size(); i++) {
             if (feedback.get(i) == Feedback.CORRECT) {
-                this.hint[i] = wordToGuess.split("")[i];
+                this.hint[i] = splitWord[i];
             }
         }
     }

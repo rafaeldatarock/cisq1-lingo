@@ -35,20 +35,20 @@ class RoundTest {
 
     public static Stream<Arguments> hintBeforeAfterExamples() {
         return Stream.of(
-            Arguments.of("koekje", new String[]{"k", ".", ".", ".", ".", "."}, List.of(ABSENT, ABSENT, ABSENT, ABSENT, PRESENT, ABSENT),    new String[]{"k", ".", ".", ".", ".", "."}),
-            Arguments.of("koekje", new String[]{"k", ".", ".", ".", ".", "."}, List.of(CORRECT, CORRECT, CORRECT, ABSENT, PRESENT, ABSENT), new String[]{"k", "o", "e", ".", ".", "."}),
-            Arguments.of("koekje", new String[]{"k", "o", "e", ".", ".", "."}, List.of(ABSENT, ABSENT, ABSENT, CORRECT, CORRECT, CORRECT),  new String[]{"k", "o", "e", "k", "j", "e"}),
-            Arguments.of("bapao",  new String[]{"k", ".", ".", ".", "."},      List.of(CORRECT, CORRECT, PRESENT, ABSENT, ABSENT),          new String[]{"b", "a", ".", ".", "."}),
-            Arguments.of("babbel", new String[]{"b", ".", ".", ".", ".", "."}, List.of(ABSENT, ABSENT, ABSENT, CORRECT, CORRECT, CORRECT),  new String[]{"b", ".", ".", "b", "e", "l"})
+            Arguments.of("koekje", new String[]{"k", ".", ".", ".", ".", "."}, "badjas",    new String[]{"k", ".", ".", ".", ".", "."}),
+            Arguments.of("koekje", new String[]{"k", ".", ".", ".", ".", "."}, "koebel",    new String[]{"k", "o", "e", ".", ".", "."}),
+            Arguments.of("koekje", new String[]{"k", "o", "e", ".", ".", "."}, "bankje",    new String[]{"k", "o", "e", "k", "j", "e"}),
+            Arguments.of("bapao",  new String[]{"k", ".", ".", ".", "."},      "baken",     new String[]{"b", "a", ".", ".", "."}),
+            Arguments.of("babbel", new String[]{"b", ".", ".", ".", ".", "."}, "oorbel",    new String[]{"b", ".", ".", "b", "e", "l"})
         );
     }
 
     @ParameterizedTest
     @MethodSource("hintBeforeAfterExamples")
     @DisplayName("Hint should update correctly based on feedback")
-    void updateHintBasedOnFeedback(String word, String[] currentHint, List<Feedback> feedbackAfterGuess, String[] nextHint) {
+    void updateHintBasedOnFeedback(String word, String[] currentHint, String guess, String[] nextHint) {
         Round round = new Round(word, currentHint);
-        round.updateHint(feedbackAfterGuess);
+        round.attemptGuess(guess);
         String actual = round.getHint();
         String expected = Arrays.toString(nextHint);
         assertEquals(expected, actual);
@@ -66,13 +66,12 @@ class RoundTest {
         assertEquals(GameStatus.PLAYING, round.attemptGuess("board"));
     }
 
-    // TODO: turn into paramTest to test edgecases like invalid attempts
     @Test
     void roundIsLost() {
         Round round = Round.start("baard");
         round.attemptGuess("board"); // 1
         round.attemptGuess("board"); // 2
-        round.attemptGuess("board"); // 3
+        round.attemptGuess("boardje"); // 3
         round.attemptGuess("board"); // 4
         assertEquals(GameStatus.GAMEOVER, round.attemptGuess("board")); // 5
     }
