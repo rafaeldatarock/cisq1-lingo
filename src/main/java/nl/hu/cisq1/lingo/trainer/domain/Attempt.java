@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static nl.hu.cisq1.lingo.trainer.domain.Feedback.*;
-import nl.hu.cisq1.lingo.trainer.domain.exception.GuessLengthDoesNotMatchWordLengthException;
 
 public class Attempt {
     private String guess;
@@ -25,10 +24,10 @@ public class Attempt {
         this.feedback = feedback;
     }
 
-    public static Attempt guess(String wordToGuess, String guess) throws GuessLengthDoesNotMatchWordLengthException {
-        Integer wordToGuessLength = wordToGuess.length();
+    public static Attempt guess(String wordToGuess, String guess) {
+        int wordToGuessLength = wordToGuess.length();
         if (wordToGuessLength != guess.length()) {
-            throw new GuessLengthDoesNotMatchWordLengthException(wordToGuessLength);
+            return new Attempt(guess, Collections.nCopies(wordToGuessLength, INVALID));
         }
 
         List<String> wordLetters = new ArrayList<>(List.of(wordToGuess.split("")));

@@ -1,5 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -9,12 +10,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.GuessLengthDoesNotMatchWordLengthException;
 
 import static nl.hu.cisq1.lingo.trainer.domain.Feedback.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AttemptTest {
@@ -56,10 +55,10 @@ class AttemptTest {
     @MethodSource("incorrectLengthExamples")
     @DisplayName("Incorrect word length throws exception")
     void attemptIncorrectWordLength(String word, String guess) {
-        assertThrows(
-            GuessLengthDoesNotMatchWordLengthException.class, 
-            () -> { Attempt.guess(word, guess); } 
-        );
+        Attempt attempt = Attempt.guess(word, guess);
+        var expected = Collections.nCopies(word.length(), INVALID);
+        var actual = attempt.getFeedback();
+        assertEquals(expected, actual);
     }
 
     @Test
