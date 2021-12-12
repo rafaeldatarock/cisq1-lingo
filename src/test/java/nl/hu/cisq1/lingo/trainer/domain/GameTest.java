@@ -13,16 +13,20 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotStartedWith5LetterWordException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.MoveNotAllowed;
 
 class GameTest {
 
     @Test
     @DisplayName("Game should start using a 5 letter word")
     void startGame() {
+        // When using the start() named constructor, a new Round should automatically be started, thus GameStatus should be PLAYING
         Game game = Game.start("baard");
+        //! change these seperate assertions for an assertion of the public getProgress() method
         assertAll("Score should be 0 and word to guess should be a 5 letter word",
-            () -> assertEquals(0, game.getScore())
-            // ! getCurrentRound() is and should be private, so unable to call directly from testclass
+            () -> assertEquals(0, game.getScore()),
+            () -> assertEquals(GameStatus.PLAYING, game.getStatus())
+            // getCurrentRound() is and should be private, so unable to call directly from testclass
             // () -> assertEquals(5, game.getCurrentRound().getWordToGuess().length())
         );
     }
@@ -47,5 +51,24 @@ class GameTest {
         Game game = Game.start(word);
         // game.attemptGuess(guess);
         assertEquals(status, game.getStatus());
+    }
+
+    @Test
+    @DisplayName("Should not be able to start new round when status is PLAYING")
+    void cannotStartWhenPlaying() {
+        Game game = Game.start("woord");
+        assertThrows(MoveNotAllowed.cannotStartNewRound().getClass(), () -> game.startNewRound("woord"));
+    }
+
+    @Test
+    @DisplayName("Should not be able to start new round when status is GAMEOVER")
+    void cannotStartWhenGameover() {
+        Game game = Game.start("woord");
+        // game.attemptGuess("foutj");
+        // game.attemptGuess("foutj");
+        // game.attemptGuess("foutj");
+        // game.attemptGuess("foutj");
+        // game.attemptGuess("foutj");
+        assertThrows(MoveNotAllowed.cannotStartNewRound().getClass(), () -> {});//game.startNewRound("woord"));
     }
 }

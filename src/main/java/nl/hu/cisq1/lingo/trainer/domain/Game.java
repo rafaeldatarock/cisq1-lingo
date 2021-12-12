@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotStartedWith5LetterWordException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.MoveNotAllowed;
 
 public class Game {
     private Integer score = 0;
@@ -38,7 +39,7 @@ public class Game {
 
     public void startNewRound(String word) {
         if (!status.equals(GameStatus.WAITING)) {
-            // throw new MoveNotAllowedException();
+            throw MoveNotAllowed.cannotStartNewRound();
         }
 
         status = GameStatus.PLAYING;
