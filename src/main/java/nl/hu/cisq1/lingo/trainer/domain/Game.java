@@ -42,13 +42,13 @@ public class Game {
             throw MoveNotAllowed.cannotStartNewRound();
         }
 
-        status = GameStatus.PLAYING;
+        this.status = GameStatus.PLAYING;
         rounds.add(Round.start(word));
     }
 
-    // TODO: public attemptGuess(String guess) {
-        
-    // }
+    public void attemptGuess(String guess) {
+        this.status = getCurrentRound().attemptGuess(guess);
+    }
 
     // TODO: getProgress()
     // Returns hint, score

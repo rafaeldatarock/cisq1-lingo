@@ -49,7 +49,7 @@ class GameTest {
     @DisplayName("Game status after first guess")
     void gameStatus(String word, String guess, GameStatus status) {
         Game game = Game.start(word);
-        // game.attemptGuess(guess);
+        game.attemptGuess(guess);
         assertEquals(status, game.getStatus());
     }
 
@@ -64,11 +64,11 @@ class GameTest {
     @DisplayName("Should not be able to start new round when status is GAMEOVER")
     void cannotStartWhenGameover() {
         Game game = Game.start("woord");
-        // game.attemptGuess("foutj");
-        // game.attemptGuess("foutj");
-        // game.attemptGuess("foutj");
-        // game.attemptGuess("foutj");
-        // game.attemptGuess("foutj");
-        assertThrows(MoveNotAllowed.cannotStartNewRound().getClass(), () -> {});//game.startNewRound("woord"));
+        game.attemptGuess("foutj");
+        game.attemptGuess("foutj");
+        game.attemptGuess("foutj");
+        game.attemptGuess("foutj");
+        game.attemptGuess("foutj");
+        assertThrows(MoveNotAllowed.cannotStartNewRound().getClass(), () -> game.startNewRound("woord"));
     }
 }
