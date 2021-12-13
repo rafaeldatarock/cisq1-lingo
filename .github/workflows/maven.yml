@@ -18,6 +18,12 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v1
+      with:
+        path: ~/.sonar/cache
+        key: ${{ runner.os }}-sonar
+        restore-keys: ${{ runner.os }}-sonar
     - name: Cache Maven packages
       uses: actions/cache@v2.1.6
       with:
@@ -26,3 +32,8 @@ jobs:
         restore-keys: ${{ runner.os }}-m2
     - name: Build with Maven using Dspring CI Profile
       run: mvn -B package --file pom.xml -Dspring.profiles.active=ci
+    - name: Build and analyze
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: mvn -B verify -Dspring.profiles.active=ci org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=rafaeldatarock_cisq1-lingo
