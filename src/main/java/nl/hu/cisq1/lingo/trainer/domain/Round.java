@@ -14,8 +14,15 @@ public class Round {
         return wordToGuess;
     }
 
-    public String getHint() {
+    public String giveHint() {
         return Arrays.toString(hint);
+    }
+
+    public List<Feedback> getLatestFeedback() {
+        if (attempts.isEmpty()) return new ArrayList<>();
+
+        // else take last item from list and get feedback
+        return this.attempts.get(attempts.size() - 1).getFeedback();
     }
 
     public Round() {}

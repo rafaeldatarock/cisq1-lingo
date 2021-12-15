@@ -50,7 +50,9 @@ public class Game {
         this.status = getCurrentRound().attemptGuess(guess);
     }
 
-    // TODO: getProgress()
-    // Returns hint, score
+    public GameProgressDTO giveProgress() {
+        Round currentRound = getCurrentRound();
+        return new GameProgressDTO(this.score, this.status, currentRound.giveHint(), currentRound.getLatestFeedback());
+    }
 
 }

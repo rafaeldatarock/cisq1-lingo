@@ -26,7 +26,7 @@ class RoundTest {
     @DisplayName("Initial hint should be based on word to guess")
     void initialHintBasedOnWord(String word, String[] hint) {
         Round round = Round.start(word);
-        String actual = round.getHint();
+        String actual = round.giveHint();
         String expected = Arrays.toString(hint);
         assertEquals(expected, actual);
     }
@@ -47,7 +47,7 @@ class RoundTest {
     void updateHintBasedOnFeedback(String word, String[] currentHint, String guess, String[] nextHint) {
         Round round = new Round(word, currentHint);
         round.attemptGuess(guess);
-        String actual = round.getHint();
+        String actual = round.giveHint();
         String expected = Arrays.toString(nextHint);
         assertEquals(expected, actual);
     }
