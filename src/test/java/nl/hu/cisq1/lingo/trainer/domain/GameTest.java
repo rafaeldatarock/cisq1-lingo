@@ -1,9 +1,10 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.DisplayName;
@@ -12,23 +13,29 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import static nl.hu.cisq1.lingo.trainer.domain.Feedback.*;
 import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotStartedWith5LetterWordException;
 import nl.hu.cisq1.lingo.trainer.domain.exception.MoveNotAllowed;
 
 class GameTest {
 
     @Test
-    @DisplayName("Game should start using a 5 letter word")
+    @DisplayName("Game should start using a 5 letter word, score 0, status playing, first letter hint and empty feedback")
     void startGame() {
         // When using the start() named constructor, a new Round should automatically be started, thus GameStatus should be PLAYING
         Game game = Game.start("baard");
-        //! change these seperate assertions for an assertion of the public getProgress() method
-        assertAll("Score should be 0 and word to guess should be a 5 letter word",
-            () -> assertEquals(0, game.getScore()),
-            () -> assertEquals(GameStatus.PLAYING, game.getStatus())
-            // getCurrentRound() is and should be private, so unable to call directly from testclass
-            // () -> assertEquals(5, game.getCurrentRound().getWordToGuess().length())
-        );
+        var expected = new GameProgressDTO(0, GameStatus.PLAYING, "[b, ., ., ., .]", new ArrayList<Feedback>());
+        var actual = game.giveProgress();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void gameProgress() {
+        Game game = Game.start("baard");
+        game.attemptGuess("board");
+        var expected = new GameProgressDTO(0, GameStatus.PLAYING, "[b, ., a, r, d]", List.of(CORRECT, ABSENT, CORRECT, CORRECT, CORRECT));
+        var actual = game.giveProgress();
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -71,4 +78,6 @@ class GameTest {
         game.attemptGuess("foutj");
         assertThrows(MoveNotAllowed.cannotStartNewRound().getClass(), () -> game.startNewRound("woord"));
     }
+
+    // TODO: test and implement score calculation!
 }
