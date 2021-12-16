@@ -58,8 +58,8 @@ public class Game {
         if (this.status == GameStatus.WAITING) this.score += currentRound.calculateScore();
     }
 
-    public GameProgressDTO giveProgress() {
+    public GameProgress giveProgress() {
         Round currentRound = getCurrentRound();
-        return new GameProgressDTO(this.score, this.status, currentRound.giveHint(), currentRound.getLatestFeedback());
+        return new GameProgress(this.score, this.status, currentRound.giveHint(), currentRound.getLatestFeedback());
     }
 }

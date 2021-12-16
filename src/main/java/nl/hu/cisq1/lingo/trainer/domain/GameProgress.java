@@ -2,13 +2,13 @@ package nl.hu.cisq1.lingo.trainer.domain;
 
 import java.util.List;
 
-public class GameProgressDTO {
+public class GameProgress {
     private int score;
     private GameStatus status;
     private String hint;
     private List<Feedback> feedback;
 
-    public GameProgressDTO(
+    public GameProgress(
         int score,
         GameStatus status,
         String hint,
@@ -46,7 +46,7 @@ public class GameProgressDTO {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        GameProgressDTO other = (GameProgressDTO) obj;
+        GameProgress other = (GameProgress) obj;
         if (feedback == null) {
             if (other.feedback != null)
                 return false;

@@ -25,7 +25,7 @@ class GameTest {
     void startGame() {
         // When using the start() named constructor, a new Round should automatically be started, thus GameStatus should be PLAYING
         Game game = Game.start("baard");
-        var expected = new GameProgressDTO(0, GameStatus.PLAYING, "[b, ., ., ., .]", new ArrayList<Feedback>());
+        var expected = new GameProgress(0, GameStatus.PLAYING, "[b, ., ., ., .]", new ArrayList<Feedback>());
         var actual = game.giveProgress();
         assertEquals(expected, actual);
     }
@@ -34,7 +34,7 @@ class GameTest {
     void gameProgress() {
         Game game = Game.start("baard");
         game.attemptGuess("board");
-        var expected = new GameProgressDTO(0, GameStatus.PLAYING, "[b, ., a, r, d]", List.of(CORRECT, ABSENT, CORRECT, CORRECT, CORRECT));
+        var expected = new GameProgress(0, GameStatus.PLAYING, "[b, ., a, r, d]", List.of(CORRECT, ABSENT, CORRECT, CORRECT, CORRECT));
         var actual = game.giveProgress();
         assertEquals(expected, actual);
     }
@@ -129,7 +129,7 @@ class GameTest {
             game.attemptGuess("foutje");
         }
         game.attemptGuess("woord");
-        var expected = new GameProgressDTO(score, GameStatus.WAITING, "[w, o, o, r, d]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
+        var expected = new GameProgress(score, GameStatus.WAITING, "[w, o, o, r, d]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
         var actual = game.giveProgress();
         assertEquals(expected, actual);
     }
@@ -142,7 +142,7 @@ class GameTest {
         game.startNewRound("worden");
         game.attemptGuess("worden");
 
-        var expected = new GameProgressDTO(50, GameStatus.WAITING, "[w, o, r, d, e, n]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
+        var expected = new GameProgress(50, GameStatus.WAITING, "[w, o, r, d, e, n]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
         var actual = game.giveProgress();
         assertEquals(expected, actual);
     }
