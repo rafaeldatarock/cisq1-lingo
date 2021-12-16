@@ -20,22 +20,21 @@ public class GameProgress {
         this. feedback = feedback;
     }
 
-    // * Getters for serializing as JSON?
-    // public int getScore() {
-    //     return this.score;
-    // }
+    public int getScore() {
+        return this.score;
+    }
 
-    // public String getStatus() {
-    //     return this.status.toString();
-    // }
+    public String getStatus() {
+        return this.status.toString();
+    }
 
-    // public String getHint() {
-    //     return this.hint;
-    // }
+    public String getHint() {
+        return this.hint;
+    }
 
-    // public List<Feedback> getFeedback() {
-    //     return this.feedback;
-    // }
+    public List<Feedback> getFeedback() {
+        return this.feedback;
+    }
 
     @Override
     @Generated

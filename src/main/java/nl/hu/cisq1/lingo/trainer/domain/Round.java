@@ -5,10 +5,39 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+@Entity
 public class Round {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column
     private String wordToGuess;
+
+    @Column
     private String[] hint;
+    
+    @OneToMany
     private List<Attempt> attempts;
+    
+    public Round() {}
+    public Round(String wordToGuess, String[] hint) {
+        this.wordToGuess = wordToGuess;
+        this.hint = hint;
+        this.attempts = new ArrayList<>();
+    }
+    public static Round start(String word) {
+        String[] hint = Collections.nCopies(word.length(), ".").toArray(new String[0]);
+        hint[0] = word.split("")[0];
+        return new Round(word, hint);
+    }
 
     public String getWordToGuess() {
         return wordToGuess;
@@ -23,19 +52,6 @@ public class Round {
 
         // else take last item from list and get feedback
         return this.attempts.get(attempts.size() - 1).getFeedback();
-    }
-
-    public Round() {}
-    public Round(String wordToGuess, String[] hint) {
-        this.wordToGuess = wordToGuess;
-        this.hint = hint;
-        this.attempts = new ArrayList<>();
-    }
-
-    public static Round start(String word) {
-        String[] hint = Collections.nCopies(word.length(), ".").toArray(new String[0]);
-        hint[0] = word.split("")[0];
-        return new Round(word, hint);
     }
 
     public GameStatus attemptGuess(String guess) {

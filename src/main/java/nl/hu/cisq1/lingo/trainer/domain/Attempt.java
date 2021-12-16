@@ -4,26 +4,38 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 import static nl.hu.cisq1.lingo.trainer.domain.Feedback.*;
 
+@Entity
 public class Attempt {
+    
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column
     private String guess;
+
+    @ElementCollection(targetClass=Feedback.class)
+    @CollectionTable(name="attempt_feedback")
+    @Column
+    @Enumerated(EnumType.STRING)
     private List<Feedback> feedback;
-
-    public String getGuess() {
-        return this.guess;
-    }
-
-    public List<Feedback> getFeedback() {
-        return this.feedback;
-    }
-
+    
     public Attempt() {}
     public Attempt(String guess, List<Feedback> feedback) {
         this.guess = guess;
         this.feedback = feedback;
     }
-
     public static Attempt guess(String wordToGuess, String guess) {
         int wordToGuessLength = wordToGuess.length();
         if (wordToGuessLength != guess.length()) {
@@ -53,6 +65,14 @@ public class Attempt {
         }
 
         return new Attempt(guess, feedback);
+    }
+
+    public String getGuess() {
+        return this.guess;
+    }
+
+    public List<Feedback> getFeedback() {
+        return this.feedback;
     }
 
     public boolean isGuessCorrect() {
