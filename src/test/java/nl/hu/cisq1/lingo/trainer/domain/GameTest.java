@@ -1,5 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -83,8 +84,66 @@ class GameTest {
     void cannotStartNewRoundWithIncorrectWordLength() {
         Game game = Game.start("woord");
         game.attemptGuess("woord");
-        assertThrows(MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength().getClass(), () -> game.startNewRound("woordje"));
+        assertAll(
+            () -> assertThrows(MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength().getClass(), () -> game.startNewRound("woord")),
+            () -> assertThrows(MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength().getClass(), () -> game.startNewRound("woordje"))
+        );
+
+        game.startNewRound("worden");
+        game.attemptGuess("worden");
+        assertAll(
+            () -> assertThrows(MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength().getClass(), () -> game.startNewRound("worden")),
+            () -> assertThrows(MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength().getClass(), () -> game.startNewRound("woord"))
+        );
+
+        game.startNewRound("woordje");
+        game.attemptGuess("woordje");
+        assertAll(
+            () -> assertThrows(MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength().getClass(), () -> game.startNewRound("woordje")),
+            () -> assertThrows(MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength().getClass(), () -> game.startNewRound("worden"))
+        );
+
+        game.startNewRound("woord");
+        game.attemptGuess("woord");
+        assertAll(
+            () -> assertThrows(MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength().getClass(), () -> game.startNewRound("woord")),
+            () -> assertThrows(MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength().getClass(), () -> game.startNewRound("woordje"))
+        );
     }
 
-    // TODO: test and implement score calculation!
+    public static Stream<Arguments> scoreExamples() {
+        return Stream.of(
+            Arguments.of(25, 0),
+            Arguments.of(20, 1),
+            Arguments.of(15, 2),
+            Arguments.of(10, 3),
+            Arguments.of(5, 4)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("scoreExamples")
+    void scoreCalculation(int score, int wrongGuesses) {
+        Game game = Game.start("woord");
+        for (int i = wrongGuesses; i > 0; i--) {
+            game.attemptGuess("foutje");
+        }
+        game.attemptGuess("woord");
+        var expected = new GameProgressDTO(score, GameStatus.WAITING, "[w, o, o, r, d]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
+        var actual = game.giveProgress();
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void sumScore() {
+        Game game = Game.start("woord");
+        game.attemptGuess("woord");
+
+        game.startNewRound("worden");
+        game.attemptGuess("worden");
+
+        var expected = new GameProgressDTO(50, GameStatus.WAITING, "[w, o, r, d, e, n]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
+        var actual = game.giveProgress();
+        assertEquals(expected, actual);
+    }
 }
