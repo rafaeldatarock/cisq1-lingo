@@ -62,4 +62,8 @@ public class Round {
             }
         }
     }
+
+    public int calculateScore() {
+        return 5 * (5 - attempts.size()) + 5;
+    }
 }
