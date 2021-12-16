@@ -64,7 +64,7 @@ class GameTest {
     @DisplayName("Should not be able to start new round when status is PLAYING")
     void cannotStartWhenPlaying() {
         Game game = Game.start("woord");
-        assertThrows(MoveNotAllowed.cannotStartNewRound().getClass(), () -> game.startNewRound("woord"));
+        assertThrows(MoveNotAllowed.cannotStartNewRoundUnlessWaiting().getClass(), () -> game.startNewRound("woord"));
     }
 
     @Test
@@ -76,7 +76,14 @@ class GameTest {
         game.attemptGuess("foutj");
         game.attemptGuess("foutj");
         game.attemptGuess("foutj");
-        assertThrows(MoveNotAllowed.cannotStartNewRound().getClass(), () -> game.startNewRound("woord"));
+        assertThrows(MoveNotAllowed.cannotStartNewRoundUnlessWaiting().getClass(), () -> game.startNewRound("woord"));
+    }
+
+    @Test
+    void cannotStartNewRoundWithIncorrectWordLength() {
+        Game game = Game.start("woord");
+        game.attemptGuess("woord");
+        assertThrows(MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength().getClass(), () -> game.startNewRound("woordje"));
     }
 
     // TODO: test and implement score calculation!

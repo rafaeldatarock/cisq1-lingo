@@ -39,7 +39,17 @@ public class Game {
 
     public void startNewRound(String word) {
         if (!status.equals(GameStatus.WAITING)) {
-            throw MoveNotAllowed.cannotStartNewRound();
+            throw MoveNotAllowed.cannotStartNewRoundUnlessWaiting();
+        }
+
+        if (!rounds.isEmpty()) {
+            int prevWordLength = getCurrentRound().getWordToGuess().length();
+            if (prevWordLength != 7 && prevWordLength + 1 != word.length()) {
+                throw MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength();
+            }
+            if (prevWordLength == 7 && word.length() != 5) {
+                throw MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength();
+            }
         }
 
         this.status = GameStatus.PLAYING;
