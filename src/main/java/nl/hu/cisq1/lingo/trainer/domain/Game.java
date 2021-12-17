@@ -47,7 +47,7 @@ public class Game {
     }
 
     public void startNewRound(String word) {
-        if (!status.equals(GameStatus.WAITING)) {
+        if (this.status != GameStatus.WAITING) {
             throw MoveNotAllowed.cannotStartNewRoundUnlessWaiting();
         }
 
@@ -66,6 +66,8 @@ public class Game {
     }
 
     public void attemptGuess(String guess) {
+        if (this.status != GameStatus.PLAYING) throw MoveNotAllowed.cannotGuessUnlessPlaying();
+
         Round currentRound = getCurrentRound();
         this.status = currentRound.attemptGuess(guess);
 
@@ -76,6 +78,15 @@ public class Game {
 
     public GameProgress giveProgress() {
         Round currentRound = getCurrentRound();
-        return new GameProgress(this.score, this.status, currentRound.giveHint(), currentRound.getLatestFeedback());
+        return new GameProgress(this.id, this.score, this.status, currentRound.giveHint(), currentRound.getLatestFeedback());
+    }
+
+    public boolean stop() {
+        if (this.status == GameStatus.GAMEOVER || this.status == GameStatus.STOPPED) {
+            throw MoveNotAllowed.cannotStopIfAlreadyGameoverOrStopped();
+        }
+
+        this.status = GameStatus.STOPPED;
+        return true;
     }
 }

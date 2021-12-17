@@ -1,5 +1,7 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import static nl.hu.cisq1.lingo.trainer.domain.Feedback.ABSENT;
+import static nl.hu.cisq1.lingo.trainer.domain.Feedback.CORRECT;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,7 +16,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static nl.hu.cisq1.lingo.trainer.domain.Feedback.*;
 import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotStartedWith5LetterWordException;
 import nl.hu.cisq1.lingo.trainer.domain.exception.MoveNotAllowed;
 
@@ -25,7 +26,7 @@ class GameTest {
     void startGame() {
         // When using the start() named constructor, a new Round should automatically be started, thus GameStatus should be PLAYING
         Game game = Game.start("baard");
-        var expected = new GameProgress(0, GameStatus.PLAYING, "[b, ., ., ., .]", new ArrayList<Feedback>());
+        var expected = new GameProgress(null, 0, GameStatus.PLAYING, "[b, ., ., ., .]", new ArrayList<Feedback>());
         var actual = game.giveProgress();
         assertEquals(expected, actual);
     }
@@ -34,7 +35,7 @@ class GameTest {
     void gameProgress() {
         Game game = Game.start("baard");
         game.attemptGuess("board");
-        var expected = new GameProgress(0, GameStatus.PLAYING, "[b, ., a, r, d]", List.of(CORRECT, ABSENT, CORRECT, CORRECT, CORRECT));
+        var expected = new GameProgress(null, 0, GameStatus.PLAYING, "[b, ., a, r, d]", List.of(CORRECT, ABSENT, CORRECT, CORRECT, CORRECT));
         var actual = game.giveProgress();
         assertEquals(expected, actual);
     }
@@ -129,7 +130,7 @@ class GameTest {
             game.attemptGuess("foutje");
         }
         game.attemptGuess("woord");
-        var expected = new GameProgress(score, GameStatus.WAITING, "[w, o, o, r, d]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
+        var expected = new GameProgress(null, score, GameStatus.WAITING, "[w, o, o, r, d]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
         var actual = game.giveProgress();
         assertEquals(expected, actual);
     }
@@ -142,7 +143,7 @@ class GameTest {
         game.startNewRound("worden");
         game.attemptGuess("worden");
 
-        var expected = new GameProgress(50, GameStatus.WAITING, "[w, o, r, d, e, n]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
+        var expected = new GameProgress(null, 50, GameStatus.WAITING, "[w, o, r, d, e, n]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
         var actual = game.giveProgress();
         assertEquals(expected, actual);
     }

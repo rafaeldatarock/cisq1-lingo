@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import nl.hu.cisq1.lingo.trainer.data.SpringGameRepository;
 import nl.hu.cisq1.lingo.trainer.domain.Game;
 import nl.hu.cisq1.lingo.trainer.domain.GameProgress;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotFound;
 import nl.hu.cisq1.lingo.words.application.WordService;
 
 @Service
@@ -21,8 +22,46 @@ public class GameService {
     }
 
     public GameProgress startGame() {
-        Game game = Game.start(wordService.provideRandomWord(5));
-        gameRepository.save(game);
+        Game game = Game.start(this.wordService.provideRandomWord(5));
+
+        this.gameRepository.save(game);
         return game.giveProgress();
+    }
+
+    public GameProgress guessWord(Long id, String guess) {
+        Game game = this.gameRepository
+            .findById(id)
+            .orElseThrow(() -> new GameNotFound(id));
+
+        game.attemptGuess(guess);
+
+        this.gameRepository.save(game);
+        return game.giveProgress();
+    }
+
+    public GameProgress newRound(Long id) {
+        Game game = this.gameRepository
+            .findById(id)
+            .orElseThrow(() -> new GameNotFound(id));
+
+        game.startNewRound(this.wordService.provideRandomWord(6));
+
+        this.gameRepository.save(game);
+        return game.giveProgress();
+    }
+
+    public GameProgress showProgress(Long id) {
+        return this.gameRepository
+            .findById(id)
+            .orElseThrow(() -> new GameNotFound(id))
+            .giveProgress();
+    }
+
+    public boolean stopGame(Long id) {
+        Game game = this.gameRepository
+            .findById(id)
+            .orElseThrow(() -> new GameNotFound(id));
+
+        return game.stop();
     }
 }
