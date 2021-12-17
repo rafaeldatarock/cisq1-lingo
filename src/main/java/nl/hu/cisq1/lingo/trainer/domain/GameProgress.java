@@ -2,40 +2,51 @@ package nl.hu.cisq1.lingo.trainer.domain;
 
 import java.util.List;
 
-public class GameProgressDTO {
+public class GameProgress {
+    private Long id;
     private int score;
     private GameStatus status;
     private String hint;
     private List<Feedback> feedback;
 
-    public GameProgressDTO(
+    public GameProgress(
+        Long id,
         int score,
         GameStatus status,
         String hint,
         List<Feedback> feedback
     ) {
+        this.id = id;
         this.score = score;
         this.status = status;
         this.hint = hint;
         this. feedback = feedback;
     }
 
-    // * Getters for serializing as JSON?
-    // public int getScore() {
-    //     return this.score;
-    // }
+    @Generated
+    public Long getId() {
+        return this.id;
+    }
 
-    // public String getStatus() {
-    //     return this.status.toString();
-    // }
+    @Generated
+    public int getScore() {
+        return this.score;
+    }
 
-    // public String getHint() {
-    //     return this.hint;
-    // }
+    @Generated
+    public String getStatus() {
+        return this.status.toString();
+    }
 
-    // public List<Feedback> getFeedback() {
-    //     return this.feedback;
-    // }
+    @Generated
+    public String getHint() {
+        return this.hint;
+    }
+
+    @Generated
+    public List<Feedback> getFeedback() {
+        return this.feedback;
+    }
 
     @Override
     @Generated
@@ -46,7 +57,7 @@ public class GameProgressDTO {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        GameProgressDTO other = (GameProgressDTO) obj;
+        GameProgress other = (GameProgress) obj;
         if (feedback == null) {
             if (other.feedback != null)
                 return false;
@@ -56,6 +67,11 @@ public class GameProgressDTO {
             if (other.hint != null)
                 return false;
         } else if (!hint.equals(other.hint))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
             return false;
         if (score != other.score)
             return false;
@@ -71,6 +87,7 @@ public class GameProgressDTO {
         int result = 1;
         result = prime * result + ((feedback == null) ? 0 : feedback.hashCode());
         result = prime * result + ((hint == null) ? 0 : hint.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + score;
         result = prime * result + ((status == null) ? 0 : status.hashCode());
         return result;

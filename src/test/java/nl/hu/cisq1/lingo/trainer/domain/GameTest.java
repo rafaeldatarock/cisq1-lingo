@@ -1,5 +1,7 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import static nl.hu.cisq1.lingo.trainer.domain.Feedback.ABSENT;
+import static nl.hu.cisq1.lingo.trainer.domain.Feedback.CORRECT;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,7 +16,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import static nl.hu.cisq1.lingo.trainer.domain.Feedback.*;
 import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotStartedWith5LetterWordException;
 import nl.hu.cisq1.lingo.trainer.domain.exception.MoveNotAllowed;
 
@@ -25,7 +26,7 @@ class GameTest {
     void startGame() {
         // When using the start() named constructor, a new Round should automatically be started, thus GameStatus should be PLAYING
         Game game = Game.start("baard");
-        var expected = new GameProgressDTO(0, GameStatus.PLAYING, "[b, ., ., ., .]", new ArrayList<Feedback>());
+        var expected = new GameProgress(null, 0, GameStatus.PLAYING, "[b, ., ., ., .]", new ArrayList<Feedback>());
         var actual = game.giveProgress();
         assertEquals(expected, actual);
     }
@@ -34,7 +35,7 @@ class GameTest {
     void gameProgress() {
         Game game = Game.start("baard");
         game.attemptGuess("board");
-        var expected = new GameProgressDTO(0, GameStatus.PLAYING, "[b, ., a, r, d]", List.of(CORRECT, ABSENT, CORRECT, CORRECT, CORRECT));
+        var expected = new GameProgress(null, 0, GameStatus.PLAYING, "[b, ., a, r, d]", List.of(CORRECT, ABSENT, CORRECT, CORRECT, CORRECT));
         var actual = game.giveProgress();
         assertEquals(expected, actual);
     }
@@ -59,6 +60,56 @@ class GameTest {
         Game game = Game.start(word);
         game.attemptGuess(guess);
         assertEquals(status, game.getStatus());
+    }
+
+    @Test
+    @DisplayName("Should not be able to attempt guess when status is WAITING")
+    void cannotGuessWhenStatusWaiting() {
+        Game game = Game.start("baard");
+        game.attemptGuess("baard");
+        assertThrows(MoveNotAllowed.cannotGuessUnlessPlaying().getClass(), () -> game.attemptGuess("gokje"));
+    }
+
+    @Test
+    @DisplayName("Should not be able to attempt guess when status is GAMEOVER")
+    void cannotGuessWhenStatusGameover() {
+        Game game = Game.start("baard");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        assertThrows(MoveNotAllowed.cannotGuessUnlessPlaying().getClass(), () -> game.attemptGuess("baard"));
+    }
+
+    @Test
+    @DisplayName("Should not be able to attempt guess when status is STOPPED")
+    void cannotGuessWhenStatusStopped() {
+        Game game = Game.start("baard");
+        game.stop();
+        assertThrows(MoveNotAllowed.cannotGuessUnlessPlaying().getClass(), () -> game.attemptGuess("baard"));
+    }
+
+    @Test
+    @DisplayName("Should not be able to stop game with status STOPPED")
+    void cannotStopStoppedGame() {
+        Game game = Game.start("baard");
+        game.stop();
+
+        assertThrows(MoveNotAllowed.cannotStopIfAlreadyGameoverOrStopped().getClass(), () -> game.stop());
+    }
+
+    @Test
+    @DisplayName("Should not be able to stop game with status GAMEOVER")
+    void cannotStopLostGame() {
+        Game game = Game.start("baard");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+
+        assertThrows(MoveNotAllowed.cannotStopIfAlreadyGameoverOrStopped().getClass(), () -> game.stop());
     }
 
     @Test
@@ -129,7 +180,7 @@ class GameTest {
             game.attemptGuess("foutje");
         }
         game.attemptGuess("woord");
-        var expected = new GameProgressDTO(score, GameStatus.WAITING, "[w, o, o, r, d]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
+        var expected = new GameProgress(null, score, GameStatus.WAITING, "[w, o, o, r, d]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
         var actual = game.giveProgress();
         assertEquals(expected, actual);
     }
@@ -142,7 +193,7 @@ class GameTest {
         game.startNewRound("worden");
         game.attemptGuess("worden");
 
-        var expected = new GameProgressDTO(50, GameStatus.WAITING, "[w, o, r, d, e, n]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
+        var expected = new GameProgress(null, 50, GameStatus.WAITING, "[w, o, r, d, e, n]", List.of(CORRECT, CORRECT, CORRECT, CORRECT, CORRECT, CORRECT));
         var actual = game.giveProgress();
         assertEquals(expected, actual);
     }

@@ -1,10 +1,11 @@
 package nl.hu.cisq1.lingo.words.application;
 
-import nl.hu.cisq1.lingo.words.data.SpringWordRepository;
-import nl.hu.cisq1.lingo.words.domain.exception.WordLengthNotSupportedException;
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import nl.hu.cisq1.lingo.words.data.SpringWordRepository;
+import nl.hu.cisq1.lingo.words.domain.exception.WordLengthNotSupportedException;
 
 @Service
 @Transactional
