@@ -81,12 +81,11 @@ public class Game {
         return new GameProgress(this.id, this.score, this.status, currentRound.giveHint(), currentRound.getLatestFeedback());
     }
 
-    public boolean stop() {
+    public void stop() {
         if (this.status == GameStatus.GAMEOVER || this.status == GameStatus.STOPPED) {
             throw MoveNotAllowed.cannotStopIfAlreadyGameoverOrStopped();
         }
 
         this.status = GameStatus.STOPPED;
-        return true;
     }
 }

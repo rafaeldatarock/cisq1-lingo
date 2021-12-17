@@ -3,10 +3,9 @@ package nl.hu.cisq1.lingo.trainer.application;
 import static nl.hu.cisq1.lingo.trainer.domain.Feedback.ABSENT;
 import static nl.hu.cisq1.lingo.trainer.domain.Feedback.CORRECT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,6 +20,7 @@ import nl.hu.cisq1.lingo.trainer.data.SpringGameRepository;
 import nl.hu.cisq1.lingo.trainer.domain.Game;
 import nl.hu.cisq1.lingo.trainer.domain.GameProgress;
 import nl.hu.cisq1.lingo.trainer.domain.GameStatus;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotFound;
 import nl.hu.cisq1.lingo.words.application.WordService;
 
 public class GameServiceTest {
@@ -82,5 +82,15 @@ public class GameServiceTest {
     void testStopGame() {
         GameService service = new GameService(mock(SpringGameRepository.class), mock(WordService.class));
 
+    }
+
+    @Test
+    void throwExceptionForMissingGame() {
+        SpringGameRepository gameRepository = mock(SpringGameRepository.class);
+        WordService wordService = mock(WordService.class);
+        GameService service = new GameService(gameRepository, wordService);
+        when(gameRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThrows(GameNotFound.class, () -> service.showProgress(1L));
     }
 }

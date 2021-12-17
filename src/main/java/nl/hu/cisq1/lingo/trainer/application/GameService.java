@@ -57,11 +57,14 @@ public class GameService {
             .giveProgress();
     }
 
-    public boolean stopGame(Long id) {
+    public GameProgress stopGame(Long id) {
         Game game = this.gameRepository
             .findById(id)
             .orElseThrow(() -> new GameNotFound(id));
 
-        return game.stop();
+        game.stop();
+
+        this.gameRepository.save(game);
+        return game.giveProgress();
     }
 }

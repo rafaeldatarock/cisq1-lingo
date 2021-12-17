@@ -63,6 +63,56 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("Should not be able to attempt guess when status is WAITING")
+    void cannotGuessWhenStatusWaiting() {
+        Game game = Game.start("baard");
+        game.attemptGuess("baard");
+        assertThrows(MoveNotAllowed.cannotGuessUnlessPlaying().getClass(), () -> game.attemptGuess("gokje"));
+    }
+
+    @Test
+    @DisplayName("Should not be able to attempt guess when status is GAMEOVER")
+    void cannotGuessWhenStatusGameover() {
+        Game game = Game.start("baard");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        assertThrows(MoveNotAllowed.cannotGuessUnlessPlaying().getClass(), () -> game.attemptGuess("baard"));
+    }
+
+    @Test
+    @DisplayName("Should not be able to attempt guess when status is STOPPED")
+    void cannotGuessWhenStatusStopped() {
+        Game game = Game.start("baard");
+        game.stop();
+        assertThrows(MoveNotAllowed.cannotGuessUnlessPlaying().getClass(), () -> game.attemptGuess("baard"));
+    }
+
+    @Test
+    @DisplayName("Should not be able to stop game with status STOPPED")
+    void cannotStopStoppedGame() {
+        Game game = Game.start("baard");
+        game.stop();
+
+        assertThrows(MoveNotAllowed.cannotStopIfAlreadyGameoverOrStopped().getClass(), () -> game.stop());
+    }
+
+    @Test
+    @DisplayName("Should not be able to stop game with status GAMEOVER")
+    void cannotStopLostGame() {
+        Game game = Game.start("baard");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+        game.attemptGuess("board");
+
+        assertThrows(MoveNotAllowed.cannotStopIfAlreadyGameoverOrStopped().getClass(), () -> game.stop());
+    }
+
+    @Test
     @DisplayName("Should not be able to start new round when status is PLAYING")
     void cannotStartWhenPlaying() {
         Game game = Game.start("woord");
