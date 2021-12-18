@@ -24,7 +24,7 @@ import nl.hu.cisq1.lingo.trainer.domain.GameStatus;
 import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotFound;
 import nl.hu.cisq1.lingo.words.application.WordService;
 
-public class GameServiceTest {
+class GameServiceTest {
     @Test
     void testStartGame() {
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
