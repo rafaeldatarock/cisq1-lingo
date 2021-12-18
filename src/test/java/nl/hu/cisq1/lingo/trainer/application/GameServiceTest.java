@@ -2,6 +2,7 @@ package nl.hu.cisq1.lingo.trainer.application;
 
 import static nl.hu.cisq1.lingo.trainer.domain.Feedback.ABSENT;
 import static nl.hu.cisq1.lingo.trainer.domain.Feedback.CORRECT;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,6 +30,7 @@ public class GameServiceTest {
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
         WordService wordService = mock(WordService.class);
         GameService service = new GameService(gameRepository, wordService);
+
         when(wordService.provideRandomWord(5)).thenReturn("baard");
         when(gameRepository.save(any(Game.class)))
             .thenAnswer(i -> {
@@ -48,8 +50,11 @@ public class GameServiceTest {
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
         WordService wordService = mock(WordService.class);
         GameService service = new GameService(gameRepository, wordService);
-        when(wordService.provideRandomWord(5)).thenReturn("baard");
-        when(gameRepository.findById(anyLong())).thenReturn(Optional.of(Game.start("baard")));
+
+        when(gameRepository.findById(anyLong()))
+            .thenReturn(Optional.of(
+                Game.start("baard")
+            ));
         when(gameRepository.save(any(Game.class)))
             .thenAnswer(i -> {
                 //* This takes the input argument for save() & sets the id attribute to 1L
@@ -57,8 +62,6 @@ public class GameServiceTest {
                 return null;
             });
         
-        service.startGame();
-            
         var expected = new GameProgress(1L, 0, GameStatus.PLAYING, "[b, ., a, r, d]", List.of(CORRECT, ABSENT, CORRECT, CORRECT, CORRECT));
         var actual = service.guessWord(1L, "board");
 
@@ -67,21 +70,56 @@ public class GameServiceTest {
 
     @Test
     void testNewRound() {
-        GameService service = new GameService(mock(SpringGameRepository.class), mock(WordService.class));
+        SpringGameRepository gameRepository = mock(SpringGameRepository.class);
+        WordService wordService = mock(WordService.class);
+        GameService service = new GameService(gameRepository, wordService);
 
+        Game arrangeGame = Game.start("baard");
+        arrangeGame.attemptGuess("baard");
+        
+        when(wordService.provideRandomWord(5)).thenReturn("baard");
+        when(wordService.provideRandomWord(6)).thenReturn("babbel");
+        when(gameRepository.findById(1L)).thenReturn(Optional.of(arrangeGame));
+        when(gameRepository.save(any(Game.class)))
+        .thenAnswer(i -> {
+            //* This takes the input argument for save() & sets the id attribute to 1L
+            ReflectionTestUtils.setField((Game) i.getArgument(0), "id", 1L);
+            return null;
+        });
+        
+        var expected = new GameProgress(1L, 25, GameStatus.PLAYING, "[b, ., ., ., ., .]", new ArrayList<>());
+        var actual = service.newRound(1L);
+
+        assertEquals(expected, actual);
     }
 
     @Test
     void testShowProgress() {
-        GameService service = new GameService(mock(SpringGameRepository.class), mock(WordService.class));
+        SpringGameRepository gameRepository = mock(SpringGameRepository.class);
+        WordService wordService = mock(WordService.class);
+        GameService service = new GameService(gameRepository, wordService);
 
+        when(gameRepository.findById(1L)).thenReturn(Optional.of(Game.start("baard")));
+
+        var expected = new GameProgress(null, 0, GameStatus.PLAYING, "[b, ., ., ., .]", new ArrayList<>());
+        var actual = service.showProgress(1L);
+
+        assertEquals(expected, actual);
     }
 
 
     @Test
     void testStopGame() {
-        GameService service = new GameService(mock(SpringGameRepository.class), mock(WordService.class));
+        SpringGameRepository gameRepository = mock(SpringGameRepository.class);
+        WordService wordService = mock(WordService.class);
+        GameService service = new GameService(gameRepository, wordService);
 
+        when(gameRepository.findById(1L)).thenReturn(Optional.of(Game.start("baard")));
+
+        var expected = new GameProgress(null, 0, GameStatus.STOPPED, "[b, ., ., ., .]", new ArrayList<>());
+        var actual = service.stopGame(1L);
+
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -91,6 +129,11 @@ public class GameServiceTest {
         GameService service = new GameService(gameRepository, wordService);
         when(gameRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(GameNotFound.class, () -> service.showProgress(1L));
+        assertAll(
+            () -> assertThrows(GameNotFound.class, () -> service.guessWord(1L, "woord")),
+            () -> assertThrows(GameNotFound.class, () -> service.showProgress(1L)),
+            () -> assertThrows(GameNotFound.class, () -> service.newRound(1L)),
+            () -> assertThrows(GameNotFound.class, () -> service.stopGame(1L))
+        );
     }
 }
