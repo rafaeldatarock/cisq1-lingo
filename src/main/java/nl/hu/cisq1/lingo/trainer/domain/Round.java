@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,7 +25,7 @@ public class Round {
     @Column
     private String[] hint;
     
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Attempt> attempts = new ArrayList<>();
     
     private Round() {}

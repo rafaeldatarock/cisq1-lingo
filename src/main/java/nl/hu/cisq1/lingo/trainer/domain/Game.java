@@ -3,6 +3,7 @@ package nl.hu.cisq1.lingo.trainer.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +26,7 @@ public class Game {
     @Column
     private GameStatus status = GameStatus.WAITING;
     
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Round> rounds = new ArrayList<>();
     
     private Game() {}
