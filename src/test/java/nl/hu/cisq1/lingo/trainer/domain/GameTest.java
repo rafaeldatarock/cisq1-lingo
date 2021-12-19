@@ -16,7 +16,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotStartedWith5LetterWordException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotStartedWith5LetterWord;
 import nl.hu.cisq1.lingo.trainer.domain.exception.MoveNotAllowed;
 
 class GameTest {
@@ -43,7 +43,7 @@ class GameTest {
     @Test
     @DisplayName("Game should not start if word length is not 5")
     void dontStartGame() {
-        assertThrows(GameNotStartedWith5LetterWordException.class, () -> Game.start("baardje"));
+        assertThrows(GameNotStartedWith5LetterWord.class, () -> Game.start("baardje"));
     }
 
     public static Stream<Arguments> gameStatusExamples() {

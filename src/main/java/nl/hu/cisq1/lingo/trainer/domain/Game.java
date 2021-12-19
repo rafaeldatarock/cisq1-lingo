@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotStartedWith5LetterWordException;
+import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotStartedWith5LetterWord;
 import nl.hu.cisq1.lingo.trainer.domain.exception.MoveNotAllowed;
 
 @Entity
@@ -29,8 +29,8 @@ public class Game {
     private List<Round> rounds = new ArrayList<>();
     
     private Game() {}
-    public static Game start(String word) throws GameNotStartedWith5LetterWordException {
-        if (word.length() != 5) throw new GameNotStartedWith5LetterWordException();
+    public static Game start(String word) throws GameNotStartedWith5LetterWord {
+        if (word.length() != 5) throw new GameNotStartedWith5LetterWord();
         
         Game game = new Game();
         game.startNewRound(word);
