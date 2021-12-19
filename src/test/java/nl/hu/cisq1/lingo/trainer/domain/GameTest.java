@@ -46,22 +46,6 @@ class GameTest {
         assertThrows(GameNotStartedWith5LetterWord.class, () -> Game.start("baardje"));
     }
 
-    public static Stream<Arguments> gameStatusExamples() {
-        return Stream.of(
-            Arguments.of("baard", "baard", GameStatus.WAITING),
-            Arguments.of("baard", "board", GameStatus.PLAYING)
-        );
-    }
-    
-    @ParameterizedTest
-    @MethodSource("gameStatusExamples")
-    @DisplayName("Game status after first guess")
-    void gameStatus(String word, String guess, GameStatus status) {
-        Game game = Game.start(word);
-        game.attemptGuess(guess);
-        assertEquals(status, game.getStatus());
-    }
-
     @Test
     @DisplayName("Should not be able to attempt guess when status is WAITING")
     void cannotGuessWhenStatusWaiting() {

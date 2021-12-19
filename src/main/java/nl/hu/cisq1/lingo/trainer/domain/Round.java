@@ -25,13 +25,12 @@ public class Round {
     private String[] hint;
     
     @OneToMany
-    private List<Attempt> attempts;
+    private List<Attempt> attempts = new ArrayList<>();
     
-    public Round() {}
-    public Round(String wordToGuess, String[] hint) {
+    private Round() {}
+    private Round(String wordToGuess, String[] hint) {
         this.wordToGuess = wordToGuess;
         this.hint = hint;
-        this.attempts = new ArrayList<>();
     }
     public static Round start(String word) {
         String[] hint = Collections.nCopies(word.length(), ".").toArray(new String[0]);
@@ -39,15 +38,15 @@ public class Round {
         return new Round(word, hint);
     }
 
-    public String getWordToGuess() {
-        return wordToGuess;
+    public int giveWordToGuessLength() {
+        return this.wordToGuess.length();
     }
 
     public String giveHint() {
         return Arrays.toString(hint);
     }
 
-    public List<Feedback> getLatestFeedback() {
+    public List<Feedback> giveLatestFeedback() {
         if (attempts.isEmpty()) return new ArrayList<>();
 
         // else take last item from list and get feedback

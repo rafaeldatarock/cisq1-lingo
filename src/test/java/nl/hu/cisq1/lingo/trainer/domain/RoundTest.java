@@ -33,20 +33,25 @@ class RoundTest {
 
     public static Stream<Arguments> hintBeforeAfterExamples() {
         return Stream.of(
-            Arguments.of("koekje", new String[]{"k", ".", ".", ".", ".", "."}, "badjas",    new String[]{"k", ".", ".", ".", ".", "."}),
-            Arguments.of("koekje", new String[]{"k", ".", ".", ".", ".", "."}, "koebel",    new String[]{"k", "o", "e", ".", ".", "."}),
-            Arguments.of("koekje", new String[]{"k", "o", "e", ".", ".", "."}, "bankje",    new String[]{"k", "o", "e", "k", "j", "e"}),
-            Arguments.of("bapao",  new String[]{"k", ".", ".", ".", "."},      "baken",     new String[]{"b", "a", ".", ".", "."}),
-            Arguments.of("babbel", new String[]{"b", ".", ".", ".", ".", "."}, "oorbel",    new String[]{"b", ".", ".", "b", "e", "l"})
+            Arguments.of("koekje", new String[]{},          "badjas",    new String[]{"k", ".", ".", ".", ".", "."}),
+            Arguments.of("koekje", new String[]{},          "koebel",    new String[]{"k", "o", "e", ".", ".", "."}),
+            Arguments.of("koekje", new String[]{"koebel"},  "bankje",    new String[]{"k", "o", "e", "k", "j", "e"}),
+            Arguments.of("bapao",  new String[]{},          "baken",     new String[]{"b", "a", ".", ".", "."}),
+            Arguments.of("babbel", new String[]{},          "oorbel",    new String[]{"b", ".", ".", "b", "e", "l"})
         );
     }
 
     @ParameterizedTest
     @MethodSource("hintBeforeAfterExamples")
     @DisplayName("Hint should update correctly based on feedback")
-    void updateHintBasedOnFeedback(String word, String[] currentHint, String guess, String[] nextHint) {
-        Round round = new Round(word, currentHint);
-        round.attemptGuess(guess);
+    void updateHintBasedOnFeedback(String word, String[] pastGuesses, String guess, String[] nextHint) {
+        Round round = Round.start(word);
+        for (String pastGuess : pastGuesses) {
+            round.attemptGuess(pastGuess); // arrange
+        }
+
+        round.attemptGuess(guess); // act
+
         String actual = round.giveHint();
         String expected = Arrays.toString(nextHint);
         assertEquals(expected, actual);

@@ -38,10 +38,6 @@ public class Game {
         return game;
     }
 
-    public GameStatus getStatus() {
-        return this.status;
-    }
-
     private Round getCurrentRound() {
         return this.rounds.get(rounds.size() - 1);
     }
@@ -52,7 +48,7 @@ public class Game {
         }
 
         if (!rounds.isEmpty()) {
-            int prevWordLength = getCurrentRound().getWordToGuess().length();
+            int prevWordLength = getCurrentRound().giveWordToGuessLength();
             if (prevWordLength != 7 && prevWordLength + 1 != word.length()) {
                 throw MoveNotAllowed.cannotStartNewRoundWithIncorrectWordLength();
             }
@@ -78,7 +74,7 @@ public class Game {
 
     public GameProgress giveProgress() {
         Round currentRound = getCurrentRound();
-        return new GameProgress(this.id, this.score, this.status, currentRound.giveHint(), currentRound.getLatestFeedback());
+        return new GameProgress(this.id, this.score, this.status, currentRound.giveHint(), currentRound.giveLatestFeedback());
     }
 
     public void stop() {

@@ -31,8 +31,8 @@ public class Attempt {
     @Enumerated(EnumType.STRING)
     private List<Feedback> feedback;
     
-    public Attempt() {}
-    public Attempt(String guess, List<Feedback> feedback) {
+    private Attempt() {}
+    private Attempt(String guess, List<Feedback> feedback) {
         this.guess = guess;
         this.feedback = feedback;
     }
@@ -65,10 +65,6 @@ public class Attempt {
         }
 
         return new Attempt(guess, feedback);
-    }
-
-    public String getGuess() {
-        return this.guess;
     }
 
     public List<Feedback> getFeedback() {
