@@ -12,11 +12,11 @@ import nl.hu.cisq1.lingo.words.application.WordService;
 
 @Service
 @Transactional
-public class GameService {
+public class TrainerService {
     private final SpringGameRepository gameRepository;
     private final WordService wordService;
 
-    public GameService(SpringGameRepository gameRepository, WordService wordService) {
+    public TrainerService(SpringGameRepository gameRepository, WordService wordService) {
         this.gameRepository = gameRepository;
         this.wordService = wordService;
     }

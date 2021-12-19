@@ -24,12 +24,12 @@ import nl.hu.cisq1.lingo.trainer.domain.GameStatus;
 import nl.hu.cisq1.lingo.trainer.domain.exception.GameNotFound;
 import nl.hu.cisq1.lingo.words.application.WordService;
 
-class GameServiceTest {
+class TrainerServiceTest {
     @Test
     void testStartGame() {
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
         WordService wordService = mock(WordService.class);
-        GameService service = new GameService(gameRepository, wordService);
+        TrainerService service = new TrainerService(gameRepository, wordService);
 
         when(wordService.provideRandomWord(5)).thenReturn("baard");
         when(gameRepository.save(any(Game.class)))
@@ -49,7 +49,7 @@ class GameServiceTest {
     void testGuessWord() {
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
         WordService wordService = mock(WordService.class);
-        GameService service = new GameService(gameRepository, wordService);
+        TrainerService service = new TrainerService(gameRepository, wordService);
 
         when(gameRepository.findById(anyLong()))
             .thenReturn(Optional.of(
@@ -72,7 +72,7 @@ class GameServiceTest {
     void testNewRound() {
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
         WordService wordService = mock(WordService.class);
-        GameService service = new GameService(gameRepository, wordService);
+        TrainerService service = new TrainerService(gameRepository, wordService);
 
         Game arrangeGame = Game.start("baard");
         arrangeGame.attemptGuess("baard");
@@ -97,7 +97,7 @@ class GameServiceTest {
     void testShowProgress() {
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
         WordService wordService = mock(WordService.class);
-        GameService service = new GameService(gameRepository, wordService);
+        TrainerService service = new TrainerService(gameRepository, wordService);
 
         when(gameRepository.findById(1L)).thenReturn(Optional.of(Game.start("baard")));
 
@@ -112,7 +112,7 @@ class GameServiceTest {
     void testStopGame() {
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
         WordService wordService = mock(WordService.class);
-        GameService service = new GameService(gameRepository, wordService);
+        TrainerService service = new TrainerService(gameRepository, wordService);
 
         when(gameRepository.findById(1L)).thenReturn(Optional.of(Game.start("baard")));
 
@@ -126,7 +126,7 @@ class GameServiceTest {
     void throwExceptionForMissingGame() {
         SpringGameRepository gameRepository = mock(SpringGameRepository.class);
         WordService wordService = mock(WordService.class);
-        GameService service = new GameService(gameRepository, wordService);
+        TrainerService service = new TrainerService(gameRepository, wordService);
         when(gameRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertAll(
