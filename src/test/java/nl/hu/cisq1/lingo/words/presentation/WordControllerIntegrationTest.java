@@ -1,7 +1,11 @@
 package nl.hu.cisq1.lingo.words.presentation;
 
-import nl.hu.cisq1.lingo.CiTestConfiguration;
+import static org.hamcrest.Matchers.hasLength;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,8 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.hamcrest.Matchers.hasLength;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import nl.hu.cisq1.lingo.CiTestConfiguration;
 
 /**
  * This test is a controller integration test as it
@@ -29,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Import(CiTestConfiguration.class)
 @AutoConfigureMockMvc
+@Tag("integration")
 class WordControllerIntegrationTest {
 
     @Autowired

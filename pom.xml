@@ -10,7 +10,7 @@
     </parent>
     <groupId>nl.hu.cisq1</groupId>
     <artifactId>lingo</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
     <name>lingo</name>
     <description>Lingo trainer for CISQ1 at the HU</description>
 

@@ -8,7 +8,15 @@ class GuessRequest {
     @Size(min = 5, max = 7, message = "Guess should be between 5 and 7 letters.")
     private String guess;
 
+    public GuessRequest() {
+        //* Empty constructor for serialization
+    }
+
     public String getGuess() {
         return guess;
+    }
+
+    public void setGuess(String guess) {
+        this.guess = guess;
     }
 }
