@@ -1,12 +1,14 @@
 package nl.hu.cisq1.lingo.trainer.presentation;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import java.util.Random;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.jayway.jsonpath.JsonPath;
-
-import static org.hamcrest.Matchers.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -55,7 +57,7 @@ class TrainerControllerIntegrationTest {
         int id = JsonPath.read(arrangeResult, "$.id");
 
         RequestBuilder request = MockMvcRequestBuilders
-            .post(String.format("/trainer/game/%d/guess", id))
+            .post("/trainer/game/{id}/guess", id)
             .contentType(MediaType.APPLICATION_JSON)
             .content("{\"guess\":\"baard\"}");      
 
@@ -70,21 +72,56 @@ class TrainerControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("tries to guess on unexisting game")
-    void shouldNotAttemptGuess() throws Exception {
-        //* In theory this test is not deterministic when tested to an actual database, 
-        //* but it is deterministic in the CI pipeline.
-        //* The probability of this test failing in a development environment 
-        //* are about 1 : (100 million - amount of games you plaid)
-        //* BUT STILL NOT DETERMINISTIC hahaha
-        int randomId = new Random().nextInt((999999999 - 100000000) + 1) + 100000000;
+    @DisplayName("starts game and shows progress")
+    void showProgress() throws Exception {
+        RequestBuilder arrangeRequest = MockMvcRequestBuilders.post("/trainer/game");
+        String arrangeResult = mockMvc.perform(arrangeRequest).andReturn().getResponse().getContentAsString();
+        int id = JsonPath.read(arrangeResult, "$.id");
 
         RequestBuilder request = MockMvcRequestBuilders
-            .post(String.format("/trainer/game/%d/guess", randomId))
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"guess\":\"baard\"}");      
+            .get("/trainer/game/{id}", id);
 
         mockMvc.perform(request)
-            .andExpect(status().isNotFound());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").isNumber())
+            .andExpect(jsonPath("$.score", is(0)))
+            .andExpect(jsonPath("$.status", is("PLAYING")))
+            .andExpect(jsonPath("$.hint", is(notNullValue())))
+            .andExpect(jsonPath("$.feedback").isArray())
+            .andExpect(jsonPath("$.feedback", hasSize(0)));
+    }
+
+    @Test
+    @DisplayName("starts game and stops it")
+    void stopGame() throws Exception {
+        RequestBuilder arrangeRequest = MockMvcRequestBuilders.post("/trainer/game");
+        String arrangeResult = mockMvc.perform(arrangeRequest).andReturn().getResponse().getContentAsString();
+        int id = JsonPath.read(arrangeResult, "$.id");
+
+        RequestBuilder request = MockMvcRequestBuilders
+            .patch("/trainer/game/{id}", id);
+
+        mockMvc.perform(request)
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").isNumber())
+            .andExpect(jsonPath("$.score", is(0)))
+            .andExpect(jsonPath("$.status", is("STOPPED")))
+            .andExpect(jsonPath("$.hint", is(notNullValue())))
+            .andExpect(jsonPath("$.feedback").isArray())
+            .andExpect(jsonPath("$.feedback", hasSize(0)));
+    }
+
+    @Test
+    @DisplayName("Should not start new round when a round is active")
+    void shouldNotStartNewRound() throws Exception {
+        RequestBuilder arrangeRequest = MockMvcRequestBuilders.post("/trainer/game");
+        String arrangeResult = mockMvc.perform(arrangeRequest).andReturn().getResponse().getContentAsString();
+        int id = JsonPath.read(arrangeResult, "$.id");
+
+        RequestBuilder request = MockMvcRequestBuilders
+            .post("/trainer/game/{id}/round", id);
+
+        mockMvc.perform(request)
+            .andExpect(status().isBadRequest());
     }
 }
