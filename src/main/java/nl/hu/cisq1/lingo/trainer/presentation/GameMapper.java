@@ -9,6 +9,7 @@ import nl.hu.cisq1.lingo.trainer.domain.Game;
 import nl.hu.cisq1.lingo.trainer.domain.Round;
 
 class GameMapper {
+    private GameMapper() {}
 
     public static FullGameResponse toDto(Game game) {
         Long id = game.getId();
