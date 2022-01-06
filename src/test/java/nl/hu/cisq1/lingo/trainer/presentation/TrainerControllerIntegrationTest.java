@@ -72,23 +72,33 @@ class TrainerControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("starts game and shows progress")
+    @DisplayName("starts game and shows progress including history")
     void showProgress() throws Exception {
-        RequestBuilder arrangeRequest = MockMvcRequestBuilders.post("/trainer/game");
-        String arrangeResult = mockMvc.perform(arrangeRequest).andReturn().getResponse().getContentAsString();
+        RequestBuilder arrangeOne = MockMvcRequestBuilders.post("/trainer/game");
+        String arrangeResult = mockMvc.perform(arrangeOne).andReturn().getResponse().getContentAsString();
         int id = JsonPath.read(arrangeResult, "$.id");
 
-        RequestBuilder request = MockMvcRequestBuilders
-            .get("/trainer/game/{id}", id);
+        RequestBuilder arrangeTwo = MockMvcRequestBuilders
+            .post("/trainer/game/{id}/guess", id)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"guess\":\"baard\"}");  
+        mockMvc.perform(arrangeTwo);
 
-        mockMvc.perform(request)
+        RequestBuilder act = MockMvcRequestBuilders
+            .get("/trainer/game/{id}", id);
+        mockMvc.perform(act)
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").isNumber())
             .andExpect(jsonPath("$.score", is(0)))
             .andExpect(jsonPath("$.status", is("PLAYING")))
-            .andExpect(jsonPath("$.hint", is(notNullValue())))
-            .andExpect(jsonPath("$.feedback").isArray())
-            .andExpect(jsonPath("$.feedback", hasSize(0)));
+            .andExpect(jsonPath("$.rounds").isArray())
+            .andExpect(jsonPath("$.rounds", hasSize(1)))
+            .andExpect(jsonPath("$.rounds[0].lastHint").isString())
+            .andExpect(jsonPath("$.rounds[0].attempts").isArray())
+            .andExpect(jsonPath("$.rounds[0].attempts", hasSize(1)))
+            .andExpect(jsonPath("$.rounds[0].attempts[0].guess", is("baard")))
+            .andExpect(jsonPath("$.rounds[0].attempts[0].feedback").isArray())
+            .andExpect(jsonPath("$.rounds[0].attempts[0].feedback", hasSize(5)));
     }
 
     @Test

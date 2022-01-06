@@ -101,8 +101,8 @@ class TrainerServiceTest {
 
         when(gameRepository.findById(1L)).thenReturn(Optional.of(Game.start("baard")));
 
-        var expected = new GameProgress(null, 0, GameStatus.PLAYING, "[b, ., ., ., .]", new ArrayList<>());
-        var actual = service.showProgress(1L);
+        var expected = Game.start("baard").giveProgress();
+        var actual = service.showFullGame(1L).giveProgress();
 
         assertEquals(expected, actual);
     }
@@ -131,7 +131,7 @@ class TrainerServiceTest {
 
         assertAll(
             () -> assertThrows(GameNotFound.class, () -> service.guessWord(1L, "woord")),
-            () -> assertThrows(GameNotFound.class, () -> service.showProgress(1L)),
+            () -> assertThrows(GameNotFound.class, () -> service.showFullGame(1L)),
             () -> assertThrows(GameNotFound.class, () -> service.newRound(1L)),
             () -> assertThrows(GameNotFound.class, () -> service.stopGame(1L))
         );

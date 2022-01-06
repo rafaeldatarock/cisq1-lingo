@@ -50,11 +50,10 @@ public class TrainerService {
         return game.giveProgress();
     }
 
-    public GameProgress showProgress(Long id) {
+    public Game showFullGame(Long id) {
         return this.gameRepository
             .findById(id)
-            .orElseThrow(() -> new GameNotFound(id))
-            .giveProgress();
+            .orElseThrow(() -> new GameNotFound(id));
     }
 
     public GameProgress stopGame(Long id) {
