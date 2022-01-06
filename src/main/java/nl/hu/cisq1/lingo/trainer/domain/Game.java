@@ -15,7 +15,7 @@ import nl.hu.cisq1.lingo.trainer.domain.exception.MoveNotAllowed;
 
 @Entity
 public class Game {
-
+    //* Attributes
     @Id
     @GeneratedValue
     private Long id;
@@ -28,8 +28,34 @@ public class Game {
     
     @OneToMany(cascade = CascadeType.ALL)
     private List<Round> rounds = new ArrayList<>();
-    
+
     private Game() {}
+    
+    @Generated
+    public Long getId() {
+        return id;
+    }
+
+    @Generated
+    public Integer getScore() {
+        return score;
+    }
+
+    @Generated
+    public GameStatus getStatus() {
+        return status;
+    }
+
+    @Generated
+    public List<Round> getRounds() {
+        return rounds;
+    }
+
+    private Round getCurrentRound() {
+        return this.rounds.get(rounds.size() - 1);
+    }
+
+    //* Logic
     public static Game start(String word) throws GameNotStartedWith5LetterWord {
         if (word.length() != 5) throw new GameNotStartedWith5LetterWord();
         
@@ -37,10 +63,6 @@ public class Game {
         game.startNewRound(word);
         
         return game;
-    }
-
-    private Round getCurrentRound() {
-        return this.rounds.get(rounds.size() - 1);
     }
 
     public void startNewRound(String word) {

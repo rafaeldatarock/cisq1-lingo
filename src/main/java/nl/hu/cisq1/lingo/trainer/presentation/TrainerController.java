@@ -56,9 +56,9 @@ public class TrainerController {
     }
 
     @GetMapping("/game/{id}")
-    public GameProgress showProgress(@PathVariable Long id) {
+    public FullGameResponse showProgress(@PathVariable Long id) {
         try {
-            return this.service.showProgress(id);
+            return GameMapper.toDto(this.service.showFullGame(id));
         } catch (GameNotFound e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }

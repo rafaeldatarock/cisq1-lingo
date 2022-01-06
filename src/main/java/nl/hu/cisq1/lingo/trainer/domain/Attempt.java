@@ -17,7 +17,7 @@ import static nl.hu.cisq1.lingo.trainer.domain.Feedback.*;
 
 @Entity
 public class Attempt {
-    
+    //* Attributes
     @Id
     @GeneratedValue
     private Long id;
@@ -30,12 +30,24 @@ public class Attempt {
     @Column
     @Enumerated(EnumType.STRING)
     private List<Feedback> feedback;
+
+    @Generated
+    public String getGuess() {
+        return this.guess;
+    }
+    
+    @Generated
+    public List<Feedback> getFeedback() {
+        return this.feedback;
+    }
     
     private Attempt() {}
     private Attempt(String guess, List<Feedback> feedback) {
         this.guess = guess;
         this.feedback = feedback;
     }
+
+    //* Logic
     public static Attempt guess(String wordToGuess, String guess) {
         int wordToGuessLength = wordToGuess.length();
         if (wordToGuessLength != guess.length()) {
@@ -67,9 +79,6 @@ public class Attempt {
         return new Attempt(guess, feedback);
     }
 
-    public List<Feedback> getFeedback() {
-        return this.feedback;
-    }
 
     public boolean isGuessCorrect() {
         return this.feedback.stream().allMatch(CORRECT::equals);

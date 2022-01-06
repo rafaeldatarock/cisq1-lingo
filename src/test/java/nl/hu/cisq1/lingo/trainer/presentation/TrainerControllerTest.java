@@ -70,7 +70,7 @@ class TrainerControllerTest {
     void shouldNotFindGame() throws Exception {
         given(trainerService.newRound(anyLong())).willThrow(GameNotFound.class);
         given(trainerService.guessWord(anyLong(), anyString())).willThrow(GameNotFound.class);
-        given(trainerService.showProgress(anyLong())).willThrow(GameNotFound.class);
+        given(trainerService.showFullGame(anyLong())).willThrow(GameNotFound.class);
         given(trainerService.stopGame(anyLong())).willThrow(GameNotFound.class);
 
         RequestBuilder roundRequest = MockMvcRequestBuilders.post("/trainer/game/{id}/round", 1);

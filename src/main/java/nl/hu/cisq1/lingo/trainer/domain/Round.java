@@ -14,7 +14,7 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Round {
-
+    //* Attributes
     @Id
     @GeneratedValue
     private Long id;
@@ -27,16 +27,16 @@ public class Round {
     
     @OneToMany(cascade = CascadeType.ALL)
     private List<Attempt> attempts = new ArrayList<>();
+
+    @Generated
+    public List<Attempt> getAttempts() {
+        return this.attempts;
+    }
     
     private Round() {}
     private Round(String wordToGuess, String[] hint) {
         this.wordToGuess = wordToGuess;
         this.hint = hint;
-    }
-    public static Round start(String word) {
-        String[] hint = Collections.nCopies(word.length(), ".").toArray(new String[0]);
-        hint[0] = word.split("")[0];
-        return new Round(word, hint);
     }
 
     public int giveWordToGuessLength() {
@@ -52,6 +52,13 @@ public class Round {
 
         // else take last item from list and get feedback
         return this.attempts.get(attempts.size() - 1).getFeedback();
+    }
+
+    //* Logic
+    public static Round start(String word) {
+        String[] hint = Collections.nCopies(word.length(), ".").toArray(new String[0]);
+        hint[0] = word.split("")[0];
+        return new Round(word, hint);
     }
 
     public GameStatus attemptGuess(String guess) {
